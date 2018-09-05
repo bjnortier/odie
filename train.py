@@ -10,9 +10,7 @@ from baselines.common import tf_util as U, zipsame
 from baselines import logger
 import gym
 import gym.spaces
-from gym.wrappers import Monitor
-import requests
-from dotenv import load_dotenv, find_dotenv
+from minotaur import MinotaurMonitor
 
 gym.envs.register(
     id='Odie-v2',
@@ -20,28 +18,6 @@ gym.envs.register(
     max_episode_steps=1000,
     reward_threshold=4800.0,
 )
-
-load_dotenv(find_dotenv('.minotaur'))
-jwt = os.getenv("MINOTAUR_JWT")
-assert jwt
-def create_minotaur_context():
-    headers = {'Authorization': 'Bearer {0}'.format(jwt)}
-    context_spec = {
-        'name': 'Odie-v2',
-        'x': {'key': 'i', 'label': 'Iterations'},
-        'y': [
-            {'key': 'rew', 'label': 'EpRewMean'},
-            {'key': 'loss_ent', 'label': 'loss_ent'},
-            {'key': 'loss_kl', 'label': 'loss_kl'},
-            {'key': 'loss_pol_surr', 'label': 'loss_pol_surr'},
-            {'key': 'loss_vf_loss', 'label': 'loss_vf_loss'}
-        ],
-        'meta': {}
-    }
-    r = requests.post('https://minotaur-1.herokuapp.com/api/contexts', headers=headers, json=context_spec)
-    print('created context: "{0}"'.format(r.json()['name']))
-    return r.json()['id']
-
 
 def train(num_timesteps, seed, model_path=None):
     env_id = 'Odie-v2'
@@ -51,36 +27,11 @@ def train(num_timesteps, seed, model_path=None):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
             hid_size=64, num_hid_layers=2)
     env = make_mujoco_env(env_id, seed)
-    env = Monitor(env, './video')
-
-    minotaur_context_id = create_minotaur_context()
-    def callback(locals, globals):
-        try:
-            if (len(locals['rewbuffer'])):
-                i = locals['iters_so_far']
-                meanlosses = locals['meanlosses']
-                loss_names = locals['loss_names']
-                data = {
-                    'i': locals['iters_so_far'],
-                    'rew': np.mean(locals['rewbuffer']),
-                }
-                for (lossval, name) in zipsame(locals['meanlosses'], locals['loss_names']):
-                    if (name != 'pol_entpen'):
-                        data['loss_' + name] = float(lossval)
-                headers = {'Authorization': 'Bearer {0}'.format(jwt)}
-                r = requests.patch(
-                    'https://minotaur-1.herokuapp.com/api/context/{0}/data'.format(minotaur_context_id),
-                    headers=headers,
-                    json=data)
-                if r.status_code != 201:
-                    print(r.json())
-        except:
-            print('[ERR]', sys.exc_info())
+    env = MinotaurMonitor(env_id, env)
 
     # parameters below were the best found in a simple random search
     # these are good enough to make humanoid walk, but whether those are
     # an absolute best or not is not certain
-    # env = RewScale(env, 0.1)
     pi = pposgd_simple.learn(env, policy_fn,
             max_timesteps=num_timesteps,
             timesteps_per_actorbatch=2048,
@@ -90,21 +41,13 @@ def train(num_timesteps, seed, model_path=None):
             optim_batchsize=64,
             gamma=0.99,
             lam=0.95,
-            schedule='linear',
-            callback=callback
+            schedule='linear'
         )
     env.close()
     if model_path:
         U.save_state(model_path)
 
     return pi
-
-class RewScale(gym.RewardWrapper):
-    def __init__(self, env, scale):
-        gym.RewardWrapper.__init__(self, env)
-        self.scale = scale
-    def reward(self, r):
-        return r * self.scale
 
 def main():
     logger.configure()
@@ -120,7 +63,7 @@ def main():
         # construct the model object, load pre-trained model and render
         pi = train(num_timesteps=1, seed=args.seed)
         U.load_state(args.model_path)
-        env = make_mujoco_env('Humanoid-v2', seed=0)
+        env = make_mujoco_env('Odie-v2', seed=0)
 
         ob = env.reset()
         while True:
@@ -129,9 +72,6 @@ def main():
             env.render()
             if done:
                 ob = env.reset()
-
-
-
 
 if __name__ == '__main__':
     main()
