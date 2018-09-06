@@ -7,15 +7,10 @@ from dotenv import load_dotenv, find_dotenv
 from git import Repo
 import numpy as np
 
-# load_dotenv(find_dotenv('.minotaur'))
-# jwt = os.getenv("MINOTAUR_JWT")
-# assert jwt
-
-# minotaur_url = 'https://minotaur-1.herokuapp.com'
-# jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsidXNlcklkIjoxfSwiaWF0IjoxNTM2MTU4NjMyfQ.16ScqXXRaU847_qStKKfPTMR8_NTGIl66O5p7uUkAu8'
-
-minotaur_url = 'http://localhost:8100'
-jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOnsidXNlcklkIjoxfSwiaWF0IjoxNTM1MzgxNTcwfQ.3YfkD5LbR3BrhGbLmGIujd4byFkh7s9Gku03BCZ7eO0'
+load_dotenv(find_dotenv('.minotaur'))
+jwt = os.getenv("MINOTAUR_JWT")
+assert jwt
+minotaur_url = 'https://minotaur-1.herokuapp.com'
 
 def create_minotaur_experiment():
     repo = Repo(os.path.dirname(__file__))
@@ -47,6 +42,7 @@ class MinotaurMonitor(Wrapper):
         self.episode_id = 1
         self.video_callable = power_of_two_video_schedule
         self.episode_rewards = []
+        self.headers = {'Authorization': 'Bearer {0}'.format(jwt)}
         self.create_video_recorder()
 
     def reset(self, **kwargs):
@@ -57,21 +53,23 @@ class MinotaurMonitor(Wrapper):
         self.episode_rewards.append(reward)
         if done:
             try:
-                headers = {'Authorization': 'Bearer {0}'.format(jwt)}
                 # Upload the episode reward mean
                 episode_total_reward = np.sum(np.array(self.episode_rewards))
                 response = requests.post(
                     '{}/api/data/{}'.format(minotaur_url, self.experiment_id),
-                    headers=headers,
-                    json={'episode': self.episode_id, 'episode_total_reward': episode_total_reward})
-                print('posting metrics: {}:{}'.format(response.status_code, response.content))
+                    headers=self.headers,
+                    json={
+                        'episode': self.episode_id,
+                        'episode_total_reward': episode_total_reward
+                    })
+                print('posting scalars: {}:{}'.format(response.status_code, response.content))
                 # Upload the video recording
                 self.video_recorder.close()
                 if (self.video_callable(self.episode_id)):
                     filename = '{}.mp4'.format(self.base_path)
                     response = requests.post(
                        '{}/api/data/{}'.format(minotaur_url, self.experiment_id),
-                       headers=headers,
+                       headers=self.headers,
                        data={'episode': self.episode_id},
                        files={'animation': open(filename, 'rb')})
                     print('posting video: {}:{}'.format(response.status_code, response.content))
@@ -84,6 +82,17 @@ class MinotaurMonitor(Wrapper):
         else:
             self.video_recorder.capture_frame()
         return observation, reward, done, info
+
+    def post_data(self, data):
+        try:
+            data['episode'] = self.episode_id
+            response = requests.post(
+                '{}/api/data/{}'.format(minotaur_url, self.experiment_id),
+                headers=self.headers,
+                json=data)
+            print('posting scalars: {}:{}'.format(response.status_code, response.content))
+        except:
+            print('[ERR]', sys.exc_info())
 
     def create_video_recorder(self):
         self.base_path = os.path.join('/tmp', '{}.video{}'.format(self.env_id, self.episode_id))

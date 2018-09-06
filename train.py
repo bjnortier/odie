@@ -29,6 +29,18 @@ def train(num_timesteps, seed, model_path=None):
     env = make_mujoco_env(env_id, seed)
     env = MinotaurMonitor(env_id, env)
 
+    def callback(locals, globals):
+        if (len(locals['rewbuffer'])):
+            meanlosses = locals['meanlosses']
+            loss_names = locals['loss_names']
+            data = {
+                'iters_so_far': locals['iters_so_far'],
+                'episode_reward_mean': np.mean(locals['rewbuffer']),
+            }
+            for (lossval, name) in zipsame(locals['meanlosses'], locals['loss_names']):
+                data['loss_' + name] = float(lossval)
+            env.post_data(data)
+
     # parameters below were the best found in a simple random search
     # these are good enough to make humanoid walk, but whether those are
     # an absolute best or not is not certain
@@ -41,7 +53,8 @@ def train(num_timesteps, seed, model_path=None):
             optim_batchsize=64,
             gamma=0.99,
             lam=0.95,
-            schedule='linear'
+            schedule='linear',
+            callback=callback
         )
     env.close()
     if model_path:
