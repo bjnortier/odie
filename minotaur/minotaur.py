@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os, sys
 from gym import Wrapper
 from gym.wrappers import Monitor
@@ -7,6 +9,7 @@ from dotenv import load_dotenv, find_dotenv
 from git import Repo
 import numpy as np
 from baselines import logger
+from termcolor import colored
 
 load_dotenv(find_dotenv('.minotaur'))
 jwt = os.getenv("MINOTAUR_JWT")
@@ -50,13 +53,15 @@ def minotaur_logkv(key, value):
 
 def minotaur_dumpkvs():
     global log_values
-    log_values['episode'] = log_values['nupdates']
     global current_minotaur_experiment_id
     response = requests.post(
         '{}/api/data/{}'.format(minotaur_url, current_minotaur_experiment_id),
         headers={'Authorization': 'Bearer {0}'.format(jwt)},
         json=log_values)
-    print('posting scalars: {}: {}-{}'.format(current_minotaur_experiment_id, response.status_code, response.content))
+    if response.status_code == 202:
+        print(colored('✓', 'green'), 'scalars')
+    else:
+        print(colored('✗', 'red'), response.status_code)
     log_values = {}
     baselines_logger_dumpkvs()
 
@@ -93,9 +98,12 @@ class MinotaurMonitor(Wrapper):
                    headers=self.headers,
                    data={'episode': self.episode_id},
                    files={'animation': open(filename, 'rb')})
-                # print('posting video: {}:{}'.format(response.status_code, response.content))
+                if response.status_code == 202:
+                    print(colored('✓', 'green'), 'video')
+                else:
+                    print(colored('✗', 'red'), response.status_code)
         except:
-            print('[ERR]', sys.exc_info())
+            print(colored('[ERR]', 'red'), sys.exc_info())
         self.episode_id += 1
         self.create_video_recorder()
         return self.env.reset(**kwargs)
@@ -105,17 +113,6 @@ class MinotaurMonitor(Wrapper):
         if not done:
             self.video_recorder.capture_frame()
         return observation, reward, done, info
-
-    def post_data(self, data):
-        try:
-            data['episode'] = self.episode_id
-            response = requests.post(
-                '{}/api/data/{}'.format(minotaur_url, self.experiment_id),
-                headers=self.headers,
-                json=data)
-            print('posting scalars: {}:{}'.format(response.status_code, response.content))
-        except:
-            print('[ERR]', sys.exc_info())
 
     def create_video_recorder(self):
         self.base_path = os.path.join('/tmp', '{}.video{}'.format(self.env_id, self.episode_id))
