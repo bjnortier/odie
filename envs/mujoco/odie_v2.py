@@ -1,8 +1,10 @@
 from os import path
 import numpy as np
+import mujoco_py
 from gym import utils
 from gym.envs.mujoco import mujoco_env
-import mujoco_py
+from gym.wrappers.monitoring import video_recorder
+from minotaur import MinotaurMonitor
 
 class OdieV2Env(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
@@ -19,7 +21,7 @@ class OdieV2Env(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_ctrl = - 0.1 * np.square(action).sum()
             reward_run = (xposafter - xposbefore)/self.dt
             reward = reward_ctrl + reward_run
-            done = False
+            done = self.sim.data.qpos[2] < -40
             return ob, reward, done, dict()
         except mujoco_py.builder.MujocoException as e:
             ob = self._get_obs()
@@ -46,5 +48,12 @@ class OdieV2Env(mujoco_env.MujocoEnv, utils.EzPickle):
         self.set_state(qpos, qvel)
         return self._get_obs()
 
+    def close(self):
+        self.minotaur_close()
+
     def viewer_setup(self):
         self.viewer.cam.distance = self.model.stat.extent * 2
+
+def make_odie_v2():
+    env = OdieV2Env()
+    return MinotaurMonitor('Odie-v2', env)

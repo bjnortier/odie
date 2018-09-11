@@ -34,19 +34,19 @@
 			<joint armature="0" axis="0 0 1" damping="0" limited="false" name="hinge_z" pos="0 0 0" stiffness="0" type="hinge"/>
 			<body name="FRLeg" pos="50.0 -25.0 -0.0">
 				<geom mesh="FRLeg" type="mesh" rgba="1.0 0 0 1"/>
-				<joint axis="0.0 1.0 0.0" name="Rev9" pos="0.0 0.0 65.0" type="hinge"/>
+				<joint axis="0.0 1.0 0.0" name="Rev9" pos="0.0 0.0 65.0" type="hinge" limited="true" range="-0.785 0.785"/>
 			</body>
 			<body name="BRLeg" pos="-50.0 -25.0 0.0">
 				<geom mesh="BRLeg" type="mesh" rgba="0.8 0.6 0 1"/>
-				<joint axis="0.0 1.0 0.0" name="Rev10" pos="0.0 0.0 65.0" type="hinge"/>
+				<joint axis="0.0 1.0 0.0" name="Rev10" pos="0.0 0.0 65.0" type="hinge" limited="true" range="-0.785 0.785"/>
 			</body>
 			<body name="FLLeg" pos="50.0 25.0 -0.0">
 				<geom mesh="FLLeg" type="mesh" rgba="0 0.9 0 1"/>
-				<joint axis="0.0 -1.0 -0.0" name="Rev11" pos="0.0 0.0 65.0" type="hinge"/>
+				<joint axis="0.0 -1.0 -0.0" name="Rev11" pos="0.0 0.0 65.0" type="hinge" limited="true" range="-0.785 0.785"/>
 			</body>
 			<body name="BLLeg" pos="-50.0 25.0 0.0">
 				<geom mesh="BLLeg" type="mesh" rgba="0 0.6 0.8 1"/>
-				<joint axis="0.0 -1.0 -0.0" name="Rev12" pos="0.0 0.0 65.0" type="hinge"/>
+				<joint axis="0.0 -1.0 -0.0" name="Rev12" pos="0.0 0.0 65.0" type="hinge" limited="true" range="-0.785 0.785"/>
 			</body>
 		</body>
 	</worldbody>
