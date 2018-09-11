@@ -1,1 +1,1 @@
-from minotaur.minotaur import MinotaurMonitor
+from minotaur.minotaur import MinotaurMonitor, create_minotaur_experiment

@@ -6,11 +6,14 @@ import requests
 from dotenv import load_dotenv, find_dotenv
 from git import Repo
 import numpy as np
+from baselines import logger
 
 load_dotenv(find_dotenv('.minotaur'))
 jwt = os.getenv("MINOTAUR_JWT")
 assert jwt
 minotaur_url = 'https://minotaur-1.herokuapp.com'
+
+current_minotaur_experiment_id = None
 
 def create_minotaur_experiment():
     repo = Repo(os.getcwd())
@@ -29,7 +32,36 @@ def create_minotaur_experiment():
     }
     response = requests.post('{}/api/experiments'.format(minotaur_url), headers=headers, json=experiment_spec)
     print('created experiment: "{0}"'.format(response.json()['name']))
-    return response.json()['id']
+    global current_minotaur_experiment_id
+    current_minotaur_experiment_id = response.json()['id']
+
+baselines_logger_logkv = logger.logkv
+baselines_logger_dumpkvs = logger.dumpkvs
+
+log_values = {}
+
+def minotaur_logkv(key, value):
+    global log_values
+    if hasattr(value, 'dtype'):
+        log_values[key] = value.item()
+    else:
+        log_values[key] = value
+    baselines_logger_logkv(key, value)
+
+def minotaur_dumpkvs():
+    global log_values
+    log_values['episode'] = log_values['nupdates']
+    global current_minotaur_experiment_id
+    response = requests.post(
+        '{}/api/data/{}'.format(minotaur_url, current_minotaur_experiment_id),
+        headers={'Authorization': 'Bearer {0}'.format(jwt)},
+        json=log_values)
+    print('posting scalars: {}: {}-{}'.format(current_minotaur_experiment_id, response.status_code, response.content))
+    log_values = {}
+    baselines_logger_dumpkvs()
+
+logger.logkv = minotaur_logkv
+logger.dumpkvs = minotaur_dumpkvs
 
 def video_schedule(episode_id):
     if (episode_id < 256):
@@ -42,7 +74,8 @@ def video_schedule(episode_id):
 class MinotaurMonitor(Wrapper):
     def __init__(self, env_id, env):
         super().__init__(env)
-        self.experiment_id = create_minotaur_experiment()
+        global current_minotaur_experiment_id
+        self.experiment_id = current_minotaur_experiment_id
         self.env_id = env_id
         self.episode_id = 1
         self.video_callable = video_schedule
@@ -52,17 +85,6 @@ class MinotaurMonitor(Wrapper):
 
     def reset(self, **kwargs):
         try:
-            # Upload the episode reward mean
-            # episode_total_reward = np.sum(np.array(self.episode_rewards))
-            # response = requests.post(
-            #     '{}/api/data/{}'.format(minotaur_url, self.experiment_id),
-            #     headers=self.headers,
-            #     json={
-            #         'episode': self.episode_id,
-            #         'episode_total_reward': episode_total_reward
-            #     })
-            # # print('posting scalars: {}:{}'.format(response.status_code, response.content))
-            # Upload the video recording
             self.video_recorder.close()
             if (self.video_recorder.enabled):
                 filename = '{}.mp4'.format(self.base_path)

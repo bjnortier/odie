@@ -1,7 +1,8 @@
 import sys
-sys.path.insert(0, "/Users/bjnortier/development/RL/baselines")
-sys.path.insert(0, "/Users/bjnortier/development/RL/gym")
-sys.path.insert(0, "/Users/bjnortier/development/RL/mujoco-py")
+import os.path as osp
+sys.path.insert(0, osp.realpath(osp.join('..', 'baselines')))
+sys.path.insert(0, osp.realpath(osp.join('..', 'gym')))
+sys.path.insert(0, osp.realpath(osp.join('..', 'mujoco-py')))
 import gym
 import gym.spaces
 
@@ -13,6 +14,8 @@ gym.envs.register(
 )
 
 from baselines.run import main
+from minotaur import create_minotaur_experiment
 
 if __name__ == '__main__':
+    create_minotaur_experiment()
     main()
