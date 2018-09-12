@@ -13,6 +13,13 @@ gym.envs.register(
     reward_threshold=4800.0,
 )
 
+gym.envs.register(
+    id='Piper-v1',
+    entry_point='envs.mujoco:make_piper_v1',
+    max_episode_steps=1024,
+    reward_threshold=4096.0,
+)
+
 from baselines.run import main
 from minotaur import create_minotaur_experiment
 
