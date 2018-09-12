@@ -2,7 +2,7 @@ import sys
 import os.path as osp
 sys.path.insert(0, osp.realpath(osp.join('..', 'baselines')))
 sys.path.insert(0, osp.realpath(osp.join('..', 'gym')))
-sys.path.insert(0, osp.realpath(osp.join('..', 'mujoco-py')))
+# sys.path.insert(0, osp.realpath(osp.join('..', 'mujoco-py')))
 import gym
 import gym.spaces
 
