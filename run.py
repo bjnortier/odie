@@ -5,6 +5,7 @@ sys.path.insert(0, osp.realpath(osp.join('..', 'gym')))
 sys.path.insert(0, osp.realpath(osp.join('..', 'mujoco-py')))
 import gym
 import gym.spaces
+from baselines.common.cmd_util import common_arg_parser
 
 gym.envs.register(
     id='Odie-v2',
@@ -24,5 +25,7 @@ from baselines.run import main
 from minotaur import create_minotaur_experiment
 
 if __name__ == '__main__':
-    create_minotaur_experiment()
+    arg_parser = common_arg_parser()
+    args, unknown_args = arg_parser.parse_known_args()
+    create_minotaur_experiment(args.env)
     main()

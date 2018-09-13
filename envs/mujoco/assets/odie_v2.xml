@@ -8,7 +8,7 @@
 		<motor gear="1"/>
 	</default>
 	<size nstack="300000" nuser_geom="1"/>
-	<option gravity="0 0 -9.81" timestep="0.01"/>
+	<option gravity="0 0 -98.1" timestep="0.01"/>
 	<asset>
 		<texture builtin="gradient" height="100" rgb1=".4 .5 .6" rgb2="0 0 0" type="skybox" width="100"/>
 		<texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
@@ -52,9 +52,9 @@
 	</worldbody>
 	<tendon/>
 	<actuator>
-		<motor gear="200" joint="Rev9" name="FRLeg"/>
-		<motor gear="200" joint="Rev10" name="BRLeg"/>
-		<motor gear="200" joint="Rev11" name="FLLeg"/>
-		<motor gear="200" joint="Rev12" name="BLLeg"/>
+		<motor gear="5000" joint="Rev9" name="FRLeg"/>
+		<motor gear="5000" joint="Rev10" name="BRLeg"/>
+		<motor gear="5000" joint="Rev11" name="FLLeg"/>
+		<motor gear="5000" joint="Rev12" name="BLLeg"/>
 	</actuator>
 </mujoco>

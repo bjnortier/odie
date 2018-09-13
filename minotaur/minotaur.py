@@ -18,14 +18,14 @@ minotaur_url = 'https://minotaur-1.herokuapp.com'
 
 current_minotaur_experiment_id = None
 
-def create_minotaur_experiment():
+def create_minotaur_experiment(env_id):
     repo = Repo(os.getcwd())
     is_dirty = repo.is_dirty()
     is_master = repo.refs.master.commit.hexsha == repo.head.reference.commit.hexsha
     is_master_synced = repo.refs.master.commit.hexsha == repo.remotes.origin.refs.master.commit.hexsha
     headers = {'Authorization': 'Bearer {0}'.format(jwt)}
     experiment_spec = {
-        'name': 'Odie-v2',
+        'name': env_id,
         'meta': {},
         'repo': list(repo.remotes.origin.urls)[0],
         'commit': repo.head.reference.commit.hexsha,
