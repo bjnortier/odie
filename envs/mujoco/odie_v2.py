@@ -52,6 +52,7 @@ class OdieV2Env(mujoco_env.MujocoEnv, utils.EzPickle):
         self.minotaur_close()
 
     def viewer_setup(self):
+        self.viewer.cam.trackbodyid = 0
         self.viewer.cam.distance = self.model.stat.extent * 2
 
 def make_odie_v2():

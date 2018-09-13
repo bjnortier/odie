@@ -3,8 +3,6 @@ import math
 import os
 import mujoco_py
 
-from baselines.common.cmd_util import common_arg_parser
-
 from os.path import dirname, join
 model = mujoco_py.load_model_from_path(join(dirname(__file__), 'envs', 'mujoco', 'assets', 'odie_v2.xml'))
 # model = mujoco_py.load_model_from_path(join(dirname(__file__), '..', '..', 'bots', 'max', 'src', 'envs', 'assets', 'metalhead_v4.xml'))

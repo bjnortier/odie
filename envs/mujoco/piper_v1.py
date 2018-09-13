@@ -55,6 +55,7 @@ class PiperV1Env(mujoco_env.MujocoEnv, utils.EzPickle):
         return self._get_obs()
 
     def viewer_setup(self):
+        self.viewer.cam.trackbodyid = 0
         self.viewer.cam.distance = self.model.stat.extent * 2
 
 def make_piper_v1():
