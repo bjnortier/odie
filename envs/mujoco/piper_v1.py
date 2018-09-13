@@ -17,10 +17,16 @@ class PiperV1Env(mujoco_env.MujocoEnv, utils.EzPickle):
         try:
             self.do_simulation(action, self.frame_skip)
             xposafter = self.sim.data.qpos[0]
-            ob = self._get_obs()
+            torso_roll_angle_after = self.sim.data.qpos[3]
+            torso_pitch_angle_after = self.sim.data.qpos[4]
+            torso_yaw_angle_after = self.sim.data.qpos[5]
             reward_ctrl = - 0.1 * np.square(action).sum()
             reward_run = (xposafter - xposbefore)/self.dt
-            reward = reward_ctrl + reward_run
+            reward_torso_roll = -np.square(torso_roll_angle_after)
+            reward_torso_pitch = -np.square(torso_pitch_angle_after)
+            reward_torso_yaw = -np.square(torso_yaw_angle_after)
+            reward = reward_ctrl + reward_run + reward_torso_roll + reward_torso_pitch + reward_torso_yaw
+            ob = self._get_obs()
             done = self.sim.data.qpos[2] < -40
             return ob, reward, done, dict()
         except mujoco_py.builder.MujocoException as e:
