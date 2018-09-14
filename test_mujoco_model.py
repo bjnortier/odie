@@ -4,23 +4,24 @@ import os
 import mujoco_py
 
 from os.path import dirname, join
-model = mujoco_py.load_model_from_path(join(dirname(__file__), 'envs', 'mujoco', 'assets', 'odie_v2.xml'))
+models_path = join(dirname(__file__), 'envs', 'mujoco', 'assets')
+model = mujoco_py.load_model_from_path(join(models_path, 'piper_v1.xml'))
 # model = mujoco_py.load_model_from_path(join(dirname(__file__), '..', '..', 'bots', 'max', 'src', 'envs', 'assets', 'metalhead_v4.xml'))
 
 sim = MjSim(model)
 viewer = MjViewer(sim)
 t = 0
-# sim.data.qvel[1] = 0.1
+sim.data.qvel[3] = -1
 while True:
-    sim.data.ctrl[0] = math.cos(t / 100.) * 1
-    sim.data.ctrl[1] = math.sin(t / 100.) * 1
-    sim.data.ctrl[2] = math.cos(t / 100.) * 1
-    sim.data.ctrl[3] = math.sin(t / 100.) * 1
+    # sim.data.ctrl[0] = math.cos(t / 100.) * 1
+    # sim.data.ctrl[1] = math.sin(t / 100.) * 1
+    # sim.data.ctrl[2] = math.cos(t / 100.) * 1
+    # sim.data.ctrl[3] = math.sin(t / 100.) * 1
     # sim.data.ctrl[4] = math.cos(t / 100.) * 1
     # sim.data.ctrl[5] = math.sin(t / 100.) * 1
     # sim.data.ctrl[6] = math.cos(t / 100.) * 1
     # sim.data.ctrl[7] = math.sin(t / 100.) * 1
-    print(sim.data.ctrl)
+    print(sim.data.qpos[3])
     t += 1
     sim.step()
     viewer.render()

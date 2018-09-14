@@ -1,3 +1,4 @@
+import math
 from os import path
 import numpy as np
 import mujoco_py
@@ -28,7 +29,7 @@ class PiperV1Env(mujoco_env.MujocoEnv, utils.EzPickle):
             reward_torso_yaw = -np.square(torso_yaw_angle_after)
             reward = reward_ctrl + reward_run + reward_torso_roll + reward_torso_pitch + reward_torso_yaw
             ob = self._get_obs()
-            done = self.sim.data.qpos[2] < -40
+            done = self.sim.data.qpos[3] > math.pi / 4 or self.sim.data.qpos[3] < -math.pi / 4
             return ob, reward, done, dict()
         except mujoco_py.builder.MujocoException as e:
             ob = self._get_obs()

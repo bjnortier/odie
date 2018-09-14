@@ -16,4 +16,5 @@ gym.envs.register(
 env = gym.make('Piper-v1')
 env.reset()
 while True:
+    env.sim.step()
     env.render()
