@@ -1,6 +1,7 @@
 from os import path
 import numpy as np
 import mujoco_py
+from mujoco_py.generated import const
 from gym import utils
 from gym.envs.mujoco import mujoco_env
 from gym.wrappers.monitoring import video_recorder
@@ -47,15 +48,17 @@ class PiperV1Env(mujoco_env.MujocoEnv, utils.EzPickle):
         assert(self.model.nq == 14)
         qpos = np.concatenate([
             np.zeros(6),
-            self.np_random.uniform(low=-.1, high=.1, size=8)
+            self.np_random.uniform(low=-0.4, high=0.4, size=self.model.nq - 6)
         ])
+
         # qpos = self.init_qpos + self.np_random.uniform(low=-.1, high=.1, size=self.model.nq)
         qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1
         self.set_state(qpos, qvel)
         return self._get_obs()
 
     def viewer_setup(self):
-        self.viewer.cam.trackbodyid = 0
+        self.viewer.cam.type = const.CAMERA_TRACKING
+        self.viewer.cam.trackbodyid = 1
         self.viewer.cam.distance = self.model.stat.extent * 2
 
 def make_piper_v1():
