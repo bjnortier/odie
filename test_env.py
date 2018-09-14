@@ -1,28 +1,19 @@
-from mujoco_py import load_model_from_xml, MjSim, MjViewer
-import math
-import os
-import mujoco_py
+import sys
+import os.path as osp
+sys.path.insert(0, osp.realpath(osp.join('..', 'baselines')))
+sys.path.insert(0, osp.realpath(osp.join('..', 'gym')))
+sys.path.insert(0, osp.realpath(osp.join('..', 'mujoco-py')))
+import gym
+import gym.spaces
 
-from os.path import dirname, join
-model = mujoco_py.load_model_from_path(join(dirname(__file__), 'envs', 'mujoco', 'assets', 'odie_v2.xml'))
-# model = mujoco_py.load_model_from_path(join(dirname(__file__), '..', '..', 'bots', 'max', 'src', 'envs', 'assets', 'metalhead_v4.xml'))
+gym.envs.register(
+    id='Piper-v1',
+    entry_point='envs.mujoco:make_piper_v1',
+    max_episode_steps=1024,
+    reward_threshold=4096.0,
+)
 
-sim = MjSim(model)
-viewer = MjViewer(sim)
-t = 0
-# sim.data.qvel[1] = 0.1
+env = gym.make('Piper-v1')
+env.reset()
 while True:
-    sim.data.ctrl[0] = math.cos(t / 100.) * 1
-    sim.data.ctrl[1] = math.sin(t / 100.) * 1
-    sim.data.ctrl[2] = math.cos(t / 100.) * 1
-    sim.data.ctrl[3] = math.sin(t / 100.) * 1
-    # sim.data.ctrl[4] = math.cos(t / 100.) * 1
-    # sim.data.ctrl[5] = math.sin(t / 100.) * 1
-    # sim.data.ctrl[6] = math.cos(t / 100.) * 1
-    # sim.data.ctrl[7] = math.sin(t / 100.) * 1
-    print(sim.data.ctrl)
-    t += 1
-    sim.step()
-    viewer.render()
-    if t > 100 and os.getenv('TESTING') is not None:
-        break
+    env.render()
