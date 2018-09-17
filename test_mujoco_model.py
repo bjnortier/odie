@@ -5,7 +5,7 @@ import mujoco_py
 
 from os.path import dirname, join
 models_path = join(dirname(__file__), 'envs', 'mujoco', 'assets')
-model = mujoco_py.load_model_from_path(join(models_path, 'piper_v2.xml'))
+model = mujoco_py.load_model_from_path(join(models_path, 'metalhead_v6.xml'))
 # model = mujoco_py.load_model_from_path(join(dirname(__file__), '..', '..', 'bots', 'max', 'src', 'envs', 'assets', 'metalhead_v4.xml'))
 
 sim = MjSim(model)

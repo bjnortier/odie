@@ -28,6 +28,21 @@ gym.envs.register(
     reward_threshold=4096.0,
 )
 
+gym.envs.register(
+    id='Piper-v3',
+    entry_point='envs.mujoco:make_piper_v3',
+    max_episode_steps=1024,
+    reward_threshold=4096.0,
+)
+
+gym.envs.register(
+    id='Metalhead-v6',
+    entry_point='envs.mujoco:make_metalhead_v6',
+    max_episode_steps=1024,
+    reward_threshold=4096.0,
+)
+
+
 from baselines.run import main
 from minotaur import create_minotaur_experiment
 

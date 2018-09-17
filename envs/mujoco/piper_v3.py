@@ -7,9 +7,9 @@ from gym import utils
 from gym.envs.mujoco import mujoco_env
 from minotaur import MinotaurMonitor
 
-class PiperV2Env(mujoco_env.MujocoEnv, utils.EzPickle):
+class PiperV3Env(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self):
-        xml_path = path.join(path.dirname(__file__), 'assets', 'piper_v2.xml')
+        xml_path = path.join(path.dirname(__file__), 'assets', 'piper_v3.xml')
         mujoco_env.MujocoEnv.__init__(self, xml_path, 5)
         utils.EzPickle.__init__(self)
 
@@ -57,6 +57,6 @@ class PiperV2Env(mujoco_env.MujocoEnv, utils.EzPickle):
         self.viewer.cam.trackbodyid = 1
         self.viewer.cam.distance = self.model.stat.extent * 2
 
-def make_piper_v2():
-    env = PiperV2Env()
-    return MinotaurMonitor('Piper-v2', env)
+def make_piper_v3():
+    env = PiperV3Env()
+    return MinotaurMonitor('Piper-v3', env)
