@@ -1,0 +1,104 @@
+<?xml version="1.0" ?>
+<mujoco model="Piper v35">
+	<compiler angle="degree" coordinate="local" inertiafromgeom="true" settotalmass="1"/>
+	<default>
+		<joint armature=".1" damping=".01" limited="true" solimplimit="0 .8 .03" solreflimit=".02 1" stiffness="8"/>
+		<geom conaffinity="0" condim="3" contype="1" friction=".4 .1 .1" rgba="0.8 0.6 .4 1" solimp="0.0 0.8 0.01" solref="0.02 1"/>
+		<motor ctrllimited="true" ctrlrange="-1 1"/>
+	</default>
+	<size nstack="300000" nuser_geom="1"/>
+	<option gravity="0 0 -98.1" timestep="0.01"/>
+	<asset>
+		<texture builtin="gradient" height="100" rgb1=".4 .5 .6" rgb2="0 0 0" type="skybox" width="100"/>
+		<texture builtin="flat" height="1278" mark="cross" markrgb="1 1 1" name="texgeom" random="0.01" rgb1="0.8 0.6 0.4" rgb2="0.8 0.6 0.4" type="cube" width="127"/>
+		<texture builtin="checker" height="100" name="texplane" rgb1="0 0 0" rgb2="0.8 0.8 0.8" type="2d" width="100"/>
+		<material name="groundplanemat" reflectance="0.5" shininess="1" specular="1" texrepeat="100 100" texture="texplane"/>
+		<material name="geom" texture="texgeom" texuniform="true"/>
+		<mesh file="piper_stl/Torso.stl" name="Torso" scale="1 1 1"/>
+		<mesh file="piper_stl/FRTopLeg.stl" name="FRTopLeg" scale="1 1 1"/>
+		<mesh file="piper_stl/FRBottomLeg.stl" name="FRBottomLeg" scale="1 1 1"/>
+		<mesh file="piper_stl/FLTopLeg.stl" name="FLTopLeg" scale="1 1 1"/>
+		<mesh file="piper_stl/FLBottomLeg.stl" name="FLBottomLeg" scale="1 1 1"/>
+		<mesh file="piper_stl/BRTopLeg.stl" name="BRTopLeg" scale="1 1 1"/>
+		<mesh file="piper_stl/BRBottomLeg.stl" name="BRBottomLeg" scale="1 1 1"/>
+		<mesh file="piper_stl/BLTopLeg.stl" name="BLTopLeg" scale="1 1 1"/>
+		<mesh file="piper_stl/BLBottomLeg.stl" name="BLBottomLeg" scale="1 1 1"/>
+	</asset>
+	<worldbody>
+		<light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3" specular=".1 .1 .1"/>
+		<geom conaffinity="1" condim="3" material="groundplanemat" name="floor" pos="0 0 0" rgba="0.8 0.9 0.8 1" size="1000 1000 1000" type="plane"/>
+		<body name="Torso" pos="0 0 0">
+			<geom mesh="Torso" type="mesh" rgba="0 0.8 0 1"/>
+			<joint armature="0" axis="1 0 0" damping="0" limited="false" name="slide_x" pos="0 0 0" stiffness="0" type="slide"/>
+			<joint armature="0" axis="0 0 1" damping="0" limited="false" name="slide_z" pos="0 0 0" stiffness="0" type="slide"/>
+			<joint armature="0" axis="0 1 0" damping="0" limited="false" name="hinge_y" pos="0 0 0" stiffness="0" type="hinge"/>
+			<body name="FRTopLeg" pos="0.0 -40.0 0.0">
+				<geom mesh="FRTopLeg" type="mesh" rgba="0 0 1 1"/>
+				<joint axis="0.0 1.0 0.0" name="FRShoulder" pos="85.0 -17.0 125.0" type="hinge" range="-90 45"/>
+				<body pos="85.0 -17.0 125.0">
+					<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
+				</body>
+				<body name="FRBottomLeg" pos="0.0 0.0 0.0">
+					<geom mesh="FRBottomLeg" type="mesh" rgba="1 0 1 1"/>
+					<joint axis="0.0 1.0 0.0" name="FRElbow" pos="85.0 -17.0 55.0" type="hinge" range="-45 45"/>
+					<body pos="85.0 -17.0 55.0">
+						<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
+					</body>
+				</body>
+			</body>
+			<body name="FLTopLeg" pos="0.0 40.0 0.0">
+				<geom mesh="FLTopLeg" type="mesh" rgba="0 0 1 1"/>
+				<joint axis="0.0 -1.0 -0.0" name="FLShoulder" pos="85.0 17.0 125.0" type="hinge" range="-45 90"/>
+				<body pos="85.0 17.0 125.0">
+					<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
+				</body>
+				<body name="FLBottomLeg" pos="0.0 0.0 0.0">
+					<geom mesh="FLBottomLeg" type="mesh" rgba="1 0 0 1"/>
+					<joint axis="0.0 -1.0 -0.0" name="FLElbow" pos="85.0 17.0 55.0" type="hinge" range="-45 45"/>
+					<body pos="85.0 17.0 55.0">
+						<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
+					</body>
+				</body>
+			</body>
+			<body name="BRTopLeg" pos="-170.0 0.0 0.0">
+				<geom mesh="BRTopLeg" type="mesh" rgba="1 0 0 1"/>
+				<joint axis="0.0 1.0 0.0" name="BRHip" pos="85.0 -57.0 125.0" type="hinge" range="-45 90"/>
+				<body pos="85.0 -57.0 125.0">
+					<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
+				</body>
+				<body name="BRBottomLeg" pos="0.0 0.0 0.0">
+					<geom mesh="BRBottomLeg" type="mesh" rgba="0 0 1 1"/>
+					<joint axis="0.0 1.0 0.0" name="BRKnee" pos="85.0 -57.0 55.0" type="hinge" range="-45 45"/>
+					<body pos="85.0 -57.0 55.0">
+						<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
+					</body>
+				</body>
+			</body>
+			<body name="BLTopLeg" pos="-340.0 0.0 0.0">
+				<geom mesh="BLTopLeg" type="mesh" rgba="1 0 0 1"/>
+				<joint axis="0.0 -1.0 -0.0" name="BLHip" pos="255.0 57.0 125.0" type="hinge" range="-90 45"/>
+				<body pos="255.0 57.0 125.0">
+					<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
+				</body>
+				<body name="BLBottomLeg" pos="170.0 0.0 1.25">
+					<geom mesh="BLBottomLeg" type="mesh" rgba="0 0 1 1"/>
+					<joint axis="0.0 -1.0 -0.0" name="BLKnee" pos="85.0 57.0 55.0" type="hinge" range="-45 45"/>
+					<body pos="85.0 57.0 55.0">
+						<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
+					</body>
+				</body>
+			</body>
+		</body>
+	</worldbody>
+	<tendon/>
+	<actuator>
+		<motor gear="5000" joint="FRShoulder" name="FRShoulder"/>
+		<motor gear="5000" joint="FRElbow" name="FRElbow"/>
+		<motor gear="5000" joint="FLShoulder" name="FLShoulder"/>
+		<motor gear="5000" joint="FLElbow" name="FLElbow"/>
+		<motor gear="5000" joint="BRHip" name="BRHip"/>
+		<motor gear="5000" joint="BRKnee" name="BRKnee"/>
+		<motor gear="5000" joint="BLHip" name="BLHip"/>
+		<motor gear="5000" joint="BLKnee" name="BLKnee"/>
+	</actuator>
+</mujoco>

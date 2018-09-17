@@ -5,15 +5,14 @@ import mujoco_py
 
 from os.path import dirname, join
 models_path = join(dirname(__file__), 'envs', 'mujoco', 'assets')
-model = mujoco_py.load_model_from_path(join(models_path, 'piper_v1.xml'))
+model = mujoco_py.load_model_from_path(join(models_path, 'piper_v2.xml'))
 # model = mujoco_py.load_model_from_path(join(dirname(__file__), '..', '..', 'bots', 'max', 'src', 'envs', 'assets', 'metalhead_v4.xml'))
 
 sim = MjSim(model)
 viewer = MjViewer(sim)
 t = 0
-sim.data.qvel[3] = -1
 while True:
-    # sim.data.ctrl[0] = math.cos(t / 100.) * 1
+    sim.data.ctrl[0] = math.cos(t / 100.) * 1
     # sim.data.ctrl[1] = math.sin(t / 100.) * 1
     # sim.data.ctrl[2] = math.cos(t / 100.) * 1
     # sim.data.ctrl[3] = math.sin(t / 100.) * 1

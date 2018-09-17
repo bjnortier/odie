@@ -91,8 +91,8 @@ class MinotaurMonitor(Wrapper):
     def reset(self, **kwargs):
         try:
             self.video_recorder.close()
-            if (self.video_recorder.enabled):
-                filename = '{}.mp4'.format(self.base_path)
+            filename = '{}.mp4'.format(self.base_path)
+            if self.video_recorder.enabled and os.path.isfile(filename):
                 response = requests.post(
                    '{}/api/data/{}'.format(minotaur_url, self.experiment_id),
                    headers=self.headers,
@@ -122,7 +122,6 @@ class MinotaurMonitor(Wrapper):
             metadata={'episode_id': self.episode_id},
             enabled=self.video_callable(self.episode_id)
         )
-        self.video_recorder.capture_frame()
 
     def close(self):
         self.video_recorder.close()
