@@ -34,7 +34,7 @@
 			<joint armature="0" axis="0 1 0" damping="0" limited="false" name="hinge_y" pos="0 0 0" stiffness="0" type="hinge"/>
 			<body name="FRTopLeg" pos="0.0 -40.0 0.0">
 				<geom mesh="FRTopLeg" type="mesh" rgba="0 0 1 1"/>
-				<joint axis="0.0 1.0 0.0" name="FRShoulder" pos="85.0 -17.0 125.0" type="hinge" range="-90 45"/>
+				<joint axis="0.0 1.0 0.0" name="FRShoulder" pos="85.0 -17.0 125.0" type="hinge" range="-45 45"/>
 				<body pos="85.0 -17.0 125.0">
 					<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
 				</body>
@@ -48,7 +48,7 @@
 			</body>
 			<body name="FLTopLeg" pos="0.0 40.0 0.0">
 				<geom mesh="FLTopLeg" type="mesh" rgba="0 0 1 1"/>
-				<joint axis="0.0 -1.0 -0.0" name="FLShoulder" pos="85.0 17.0 125.0" type="hinge" range="-45 90"/>
+				<joint axis="0.0 -1.0 -0.0" name="FLShoulder" pos="85.0 17.0 125.0" type="hinge" range="-45 45"/>
 				<body pos="85.0 17.0 125.0">
 					<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
 				</body>
@@ -62,7 +62,7 @@
 			</body>
 			<body name="BRTopLeg" pos="-170.0 0.0 0.0">
 				<geom mesh="BRTopLeg" type="mesh" rgba="1 0 0 1"/>
-				<joint axis="0.0 1.0 0.0" name="BRHip" pos="85.0 -57.0 125.0" type="hinge" range="-45 90"/>
+				<joint axis="0.0 1.0 0.0" name="BRHip" pos="85.0 -57.0 125.0" type="hinge" range="-45 45"/>
 				<body pos="85.0 -57.0 125.0">
 					<geom pos="0 0 0" rgba="0 1.0 1.0 1" size="2" type="sphere"/>
 				</body>
