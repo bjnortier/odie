@@ -8,6 +8,13 @@ import gym.spaces
 from baselines.common.cmd_util import common_arg_parser
 
 gym.envs.register(
+    id='Humanoid-Minotaur-v2',
+    entry_point='envs.mujoco:make_humanoid_v2',
+    max_episode_steps=1024,
+    reward_threshold=4096.0,
+)
+
+gym.envs.register(
     id='Odie-v2',
     entry_point='envs.mujoco:make_odie_v2',
     max_episode_steps=1024,
