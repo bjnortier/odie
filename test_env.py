@@ -19,8 +19,7 @@ env = gym.make('Piper-v3')
 env.reset()
 t = 0
 while True:
-    action = np.zeros(8)
-    action[0] = math.cos(t / 100.) * 10
+    action = np.ones(8) * math.cos(t / 100.)
     env.env.env.step(action)
     env.render()
     t += 1
