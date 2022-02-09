@@ -46,7 +46,7 @@ Send2Trash==1.5.0
 six==1.11.0
 smmap2==2.0.4
 tensorboard==1.8.0
-tensorflow==1.4.0
+tensorflow==2.5.3
 tensorflow-tensorboard==0.4.0rc2
 termcolor==1.1.0
 urllib3==1.22
