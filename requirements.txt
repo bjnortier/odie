@@ -24,7 +24,7 @@ Markdown==2.6.9
 matplotlib==2.1.0
 mpi4py==3.0.0
 mujoco-py==1.50.1.56
-numpy==1.13.3
+numpy==1.22.0
 opencv-python==3.4.3.18
 pandas==0.21.0
 Pillow==5.2.0
