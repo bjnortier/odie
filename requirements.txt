@@ -18,7 +18,7 @@ gym==0.10.5
 html5lib==0.9999999
 idna==2.6
 imageio==2.3.0
-joblib==0.12.4
+joblib==1.2.0
 kiwisolver==1.0.1
 Markdown==2.6.9
 matplotlib==2.1.0
